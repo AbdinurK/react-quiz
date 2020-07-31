@@ -89,6 +89,10 @@ class Quiz extends Component {
         })
     };
 
+    componentDidMount() {
+        console.log()
+    }
+
     render() {
         return (
             <div className="Quiz">
