@@ -1,17 +1,24 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import classes from "./QuizList.module.css";
+import Loader from "../../components/UI/Loader/Loader";
+import { fetchQuizzes } from "../../store/actions/quiz"
+import { connect } from "react-redux"
 
-export default class QuizList extends Component {
+class QuizList extends Component {
 
-    renderQuizes() {
-        return [1, 2, 3].map((quiz, index) => {
+    componentDidMount() {
+        this.props.fetchQuizzes()
+    }
+
+    renderQuizzes() {
+        return this.props.quizzes.map(quiz => {
             return (
                 <li
-                    key={index}
+                    key={quiz.id}
                 >
-                    <NavLink to={'/quiz/' + quiz}>
-                        Тест { quiz }
+                    <NavLink to={'/quiz/' + quiz.id}>
+                        { quiz.name }
                     </NavLink>
                 </li>
             )
@@ -23,11 +30,27 @@ export default class QuizList extends Component {
             <div className={classes.QuizList}>
                 <div>
                     <h1>Список тестов</h1>
-                    <ul>
-                        { this.renderQuizes() }
-                    </ul>
+                    {
+                        this.props.loading && this.props.quizzes.length !== 0
+                        ? <Loader/>
+                        : <ul>
+                                { this.renderQuizzes() }
+                          </ul>
+                    }
+
                 </div>
             </div>
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        quizzes: state.quiz.quizzes,
+        loading: state.quiz.loading
+    }
+}
+
+
+
+export default connect(mapStateToProps, { fetchQuizzes })(QuizList)

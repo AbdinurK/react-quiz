@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import classes from './Auth.module.css'
 import Button from '../../components/UI/Button/Button'
 import Input from '../../components/UI/Input/Input'
+import axios from "axios"
 import is from 'is-js'
 
 export default class Auth extends Component {
@@ -36,17 +37,31 @@ export default class Auth extends Component {
     }
   }
 
-  loginHandler = () => {
+  loginHandler = async () => {
+    const authData = {
+      email: this.state.formControls.email.value,
+      password: this.state.formControls.password.value,
+      returnSecureToken: true
+    };
+    await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDYFxLoj2Mbl7Ks4fXunCb8M3s_dLyyuek', authData)
+        .then(res => console.log(res.data))
+        .catch(e => console.log(e))
+  };
 
-  }
-
-  registerHandler = () => {
-
-  }
+  registerHandler = async () => {
+    const authData = {
+      email: this.state.formControls.email.value,
+      password: this.state.formControls.password.value,
+      returnSecureToken: true
+    };
+    await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDYFxLoj2Mbl7Ks4fXunCb8M3s_dLyyuek', authData)
+        .then(res => console.log(res.data))
+        .catch(e => console.log(e))
+  };
 
   submitHandler = event => {
     event.preventDefault()
-  }
+  };
 
   validateControl(value, validation) {
     if (!validation) {
@@ -59,9 +74,9 @@ export default class Auth extends Component {
       isValid = value.trim() !== '' && isValid
     }
 
-    if (validation.email) {
-      isValid = is.email(value) && isValid
-    }
+    // if (validation.email) {
+    //   isValid = is.email(value) && isValid
+    // }
 
     if (validation.minLength) {
       isValid = value.length >= validation.minLength && isValid
